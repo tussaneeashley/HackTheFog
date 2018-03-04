@@ -526,7 +526,7 @@ public class tazklevellerapp {
 	
 	public void updatePercent() {
 		if(taskList.getTotalCount() != 0) {
-			percent = (taskList.getCompletedCount()/taskList.getTotalCount())*100;
+			percent = (int)((taskList.getCompletedCount()/(double)taskList.getTotalCount())*100);
 			}
 		else {
 				percent = 20;
