@@ -83,19 +83,21 @@ public class tazklevellerapp {
 	 * @throws IOException 
 	 */
 	private void initialize() throws IOException {
-		if (!new File(filepathPrefs).exists())
-		{
-			prefs = new Preferences();
-		} else {
-			prefs = (Preferences) readObjectFromFile(filepathPrefs);
-		}
-		if (!new File(filepathList).exists())
-		{
-			taskList = new TaskList();
-		} else {
-			taskList = (TaskList) readObjectFromFile(filepathList);
-		}
+//		if (!new File(filepathPrefs).exists())
+//		{
+//			prefs = new Preferences();
+//		} else {
+//			prefs = (Preferences) readObjectFromFile(filepathPrefs);
+//		}
+//		if (!new File(filepathList).exists())
+//		{
+//			taskList = new TaskList();
+//		} else {
+//			taskList = (TaskList) readObjectFromFile(filepathList);
+//		}
 				
+		prefs = new Preferences();
+		taskList = new TaskList();
 		frame = new JFrame();
 		frame.getContentPane().setBackground(prefs.getColor());
 		frame.setBounds(100, 100, 647, 952);
@@ -115,36 +117,36 @@ public class tazklevellerapp {
 		lblGood.setBounds(15, 16, 590, 65);
 		panel.setLayout(null);
 		
-		JButton btnSave = new JButton("Save");
-		btnSave.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				new File(filepathPrefs);
-				new File(filepathList);
-				writeObjectToFile(prefs,filepathPrefs);
-				writeObjectToFile(taskList,filepathList);
-			}
-		});
-		btnSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnSave.setBounds(15, 16, 80, 29);
-		panel.add(btnSave);
+//		JButton btnSave = new JButton("Save");
+//		btnSave.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent arg0) {
+//				new File(filepathPrefs);
+//				new File(filepathList);
+//				writeObjectToFile(prefs,filepathPrefs);
+//				writeObjectToFile(taskList,filepathList);
+//			}
+//		});
+//		btnSave.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//			}
+//		});
+//		btnSave.setBounds(15, 16, 80, 29);
+//		panel.add(btnSave);
 		
-		JButton btnLoad = new JButton("Load");
-		btnLoad.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				try {
-					initialize();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		btnLoad.setBounds(101, 16, 95, 29);
-		panel.add(btnLoad);
+//		JButton btnLoad = new JButton("Load");
+//		btnLoad.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				try {
+//					initialize();
+//				} catch (IOException e1) {
+//					e1.printStackTrace();
+//				}
+//			}
+//		});
+//		btnLoad.setBounds(101, 16, 95, 29);
+//		panel.add(btnLoad);
 		
 		lblGood.setFont(new Font("Segoe UI", Font.BOLD, 40));
 		
@@ -222,6 +224,15 @@ public class tazklevellerapp {
 		table.setRowHeight(55);
 		
 		JButton btnCompleteTask = new JButton("Completed");
+		btnCompleteTask.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				taskList.setComplete(table.getSelectedRow()-1);
+				updateHomeTable();
+				label_1.setText("Incomplete tasks: "+taskList.getIncompleteCount());
+				
+			}
+		});
 		btnCompleteTask.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -230,6 +241,14 @@ public class tazklevellerapp {
 		panel.add(btnCompleteTask);
 		
 		JButton btnDelete = new JButton("Delete");
+		btnDelete.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				taskList.removeTask(table.getSelectedRow()-1);
+				updateHomeTable();
+				label_1.setText("Incomplete tasks: "+taskList.getIncompleteCount());
+			}
+		});
 		btnDelete.setBounds(499, 788, 95, 29);
 		panel.add(btnDelete);
 		
@@ -344,28 +363,27 @@ public class tazklevellerapp {
 	}
 	
 	public void updateHomeTable(){
-		if (taskList.getTotalCount()==0) {
-			table.setModel(new DefaultTableModel(new Object[][] {
-				{"To-Do", "Severity"},
-				{null, null},
-				{null, null},
-				{null, null},
-				{null, null},
-				{null, null},
-				{null, null},
-			},
-			new String[] {
-				"To-Do", "Severity"
-			}));
-		}
-		else {
-			DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+		DefaultTableModel tableModel = new DefaultTableModel(new Object[][] {
+			{"To-Do", "Severity"},
+			{null, null},
+			{null, null},
+			{null, null},
+			{null, null},
+			{null, null},
+			{null, null},
+		},
+		new String[] {
+			"To-Do", "Severity"
+		});
+		if (taskList.getIncompleteCount()>0) {
 			int loopSize = Math.min(taskList.getIncompleteCount()+1, 7);
 			for(int i =1;i<loopSize;i++) {
 				tableModel.setValueAt(taskList.getNameIncomplete(i-1), i, 0);
 				tableModel.setValueAt(taskList.getSeverityIncomplete(i-1), i, 1);
 			}
-			table.setModel(tableModel);
 		}
+		table.setModel(tableModel);
+		table.getColumnModel().getColumn(0).setPreferredWidth(236);
+		table.getColumnModel().getColumn(1).setPreferredWidth(40);
 	}
 }

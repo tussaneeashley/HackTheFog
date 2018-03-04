@@ -34,10 +34,20 @@ public class TaskList implements Serializable{
 		totalTaskCount--;
 	}
 	
+	public void removeTask(int index) {
+		Task task = incompleteTasks.get(index);
+		removeTask(task);
+	}
+	
 	public void removeCompleted(Task completedTask) {
 		completedTasks.remove(completedTask);
 		completedCount--;
 		totalTaskCount--;
+	}
+	
+	public void removeCompleted(int index) {
+		Task task = completedTasks.get(index);
+		removeCompleted(task);
 	}
 	
 	public void setComplete(Task completedTask) {
@@ -45,6 +55,11 @@ public class TaskList implements Serializable{
 		incompleteCount--;
 		completedTasks.add(completedTask);
 		completedCount++;
+	}
+	
+	public void setComplete(int index) {
+		Task task = incompleteTasks.get(index);
+		setComplete(task);
 	}
 	
 	public int getTotalCount() {
