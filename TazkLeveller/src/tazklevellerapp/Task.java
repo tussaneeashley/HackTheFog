@@ -4,10 +4,21 @@ public class Task {
 	
 	private String name;
 	private int severity;
-	private int hoursToFinish;
+	private double hoursToFinish;
 	
 	public Task(String name) {
 		this.name = name;
+	}
+	
+	public Task(String name,int severity) {
+		this.name = name;
+		this.severity = severity;
+	}
+	
+	public Task(String name,int severity,double hoursToFinish) {
+		this.name = name;
+		this.severity = severity;
+		this.hoursToFinish = hoursToFinish;
 	}
 	
 	public void editName(String newName) {
@@ -18,8 +29,20 @@ public class Task {
 		this.severity = severity;
 	}
 	
-	public void setHours(int hours) {
+	public void setHours(double hours) {
 		hoursToFinish = hours;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public int getSeverity() {
+		return severity;
+	}
+	
+	public double getHours() {
+		return hoursToFinish;
 	}
 	
 }
