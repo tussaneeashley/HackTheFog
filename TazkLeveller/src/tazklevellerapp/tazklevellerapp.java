@@ -306,7 +306,7 @@ public class tazklevellerapp {
 		
 		if(percent < 66 && percent >= 33) {
 			
-			lblNewLabel.setText("Your Puppy's emotion is Feeling Worried");
+			lblNewLabel.setText("Your Puppy is task Worried ");
 			panel_1.add(okayLabel);
 			
 		}
