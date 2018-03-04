@@ -8,11 +8,16 @@ import java.awt.TextArea;
 import java.util.Calendar;
 import java.awt.BorderLayout;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Insets;
 
 import javax.swing.SwingConstants;
@@ -37,6 +42,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.ListSelectionModel;
 
 public class tazklevellerapp {
 	private static final String filepathPrefs=".\\Data\\Preferences.ser";
@@ -44,6 +50,7 @@ public class tazklevellerapp {
 	
 	private JFrame frame;
 	private JPanel panel;
+	private JPanel panel_1;
 	
 	private Preferences prefs;
 	private Calendar calendar = Calendar.getInstance();
@@ -52,7 +59,18 @@ public class tazklevellerapp {
 	private TaskList taskList;
 	
 	private int percent;
-	private JLabel HappyPuppy;
+	private JTable table_1;
+	private JTable table_2;
+	
+	private ImageIcon happy = new ImageIcon(new ImageIcon("./Img/Happy.png").getImage().getScaledInstance(350, 350, Image.SCALE_DEFAULT));
+	private JLabel happyLabel = new JLabel(happy);
+	private ImageIcon Crying = new ImageIcon(new ImageIcon("./Img/Crying.png").getImage().getScaledInstance(350, 350, Image.SCALE_DEFAULT));
+	private JLabel cryingLabel = new JLabel(Crying);
+	private ImageIcon Okay = new ImageIcon(new ImageIcon("./Img/Not Feeling Good.png").getImage().getScaledInstance(350, 350, Image.SCALE_DEFAULT));
+	private JLabel okayLabel = new JLabel(Okay);
+	private JProgressBar progressBar;
+	private JLabel lblNewLabel;
+	
 
 	/**
 	 * Launch the application.
@@ -110,6 +128,7 @@ public class tazklevellerapp {
 		frame.getContentPane().add(tabbedPane);
 		
 		panel = new JPanel();
+		panel.setBackground(Color.PINK);
 		tabbedPane.addTab("Home",new ImageIcon("./Img/home.png") , panel, null);
 		
 		JLabel lblGood = new JLabel("Hello,");
@@ -191,9 +210,17 @@ public class tazklevellerapp {
 		comboBox.setBounds(451, 200, 154, 71);
 		panel.add(comboBox);
 		
-		JLabel label_1 = new JLabel("Incomplete Tasks: " + taskList.getIncompleteCount());
-		label_1.setBounds(15, 792, 213, 20);
+		JLabel label_1 = new JLabel("Incomplete: " + taskList.getIncompleteCount());
+		label_1.setBounds(15, 792, 121, 20);
 		panel.add(label_1);
+		
+		JLabel lblCompletedTasks = new JLabel("Completed: " + taskList.getCompletedCount());
+		lblCompletedTasks.setBounds(146, 792, 95, 20);
+		panel.add(lblCompletedTasks);
+		
+		JLabel lblTotalTasks = new JLabel("Total: " + taskList.getTotalCount());
+		lblTotalTasks.setBounds(256, 792, 102, 20);
+		panel.add(lblTotalTasks);
 		
 		JButton btnAddTask = new JButton("Add Task");
 		btnAddTask.addMouseListener(new MouseAdapter() {
@@ -202,8 +229,12 @@ public class tazklevellerapp {
 				if (textArea.getText().trim().length() > 0) {
 					taskList.addTask(textArea.getText(),comboBox.getSelectedIndex());
 					updateHomeTable();
-					label_1.setText("Incomplete tasks: "+taskList.getIncompleteCount());
-					System.out.println(taskList.getIncompleteCount());
+					updateIncompleteTable();
+					updateCompleteTable();
+					label_1.setText("Incomplete: "+taskList.getIncompleteCount());
+					lblCompletedTasks.setText("Completed: "+taskList.getCompletedCount());
+					lblTotalTasks.setText("Total: "+taskList.getTotalCount());
+					updatePercent();
 				} else {}
 				
 			}
@@ -218,18 +249,25 @@ public class tazklevellerapp {
 		table.getColumnModel().getColumn(0).setPreferredWidth(236);
 		table.getColumnModel().getColumn(1).setPreferredWidth(40);
 		table.setBounds(15, 391, 590, 385);
-		panel.add(table);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
 		table.setBackground(Color.WHITE);
 		table.setRowHeight(55);
+		JScrollPane scroll = new JScrollPane(table);
+		scroll.setBounds(15, 391, 590, 385);
+		panel.add(scroll);
 		
 		JButton btnCompleteTask = new JButton("Completed");
 		btnCompleteTask.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				taskList.setComplete(table.getSelectedRow()-1);
+				taskList.setComplete(table.getSelectedRow());
 				updateHomeTable();
-				label_1.setText("Incomplete tasks: "+taskList.getIncompleteCount());
+				updateCompleteTable();
+				updateIncompleteTable();
+				label_1.setText("Incomplete: "+taskList.getIncompleteCount());
+				lblCompletedTasks.setText("Completed: "+taskList.getCompletedCount());
+				lblTotalTasks.setText("Total: "+taskList.getTotalCount());
+				updatePercent();
 				
 			}
 		});
@@ -244,93 +282,130 @@ public class tazklevellerapp {
 		btnDelete.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				taskList.removeTask(table.getSelectedRow()-1);
+				taskList.removeTask(table.getSelectedRow());
 				updateHomeTable();
-				label_1.setText("Incomplete tasks: "+taskList.getIncompleteCount());
+				updateCompleteTable();
+				updateIncompleteTable();
+				label_1.setText("Incomplete: "+taskList.getIncompleteCount());
+				lblCompletedTasks.setText("Completed: "+taskList.getCompletedCount());
+				lblTotalTasks.setText("Total: "+taskList.getTotalCount());
+				updatePercent();
 			}
 		});
 		btnDelete.setBounds(499, 788, 95, 29);
 		panel.add(btnDelete);
 		
-		
-		
-		
-		
-		ImageIcon happy = new ImageIcon("./Img/Happy.png");
-		JLabel happyLabel = new JLabel(happy);
-		
-		ImageIcon Crying = new ImageIcon("./Img/Crying.png");
-		JLabel cryingLabel = new JLabel(Crying);
-		
-		ImageIcon Okay = new ImageIcon("./Img/Not feeling Good.png");
-		JLabel okayLabel = new JLabel(Okay);
-		
-		
-		
-		
 		happyLabel.setBounds(130, 198, 334, 323);
-		
 		cryingLabel.setBounds(130, 198, 334, 323);
-		
 		okayLabel.setBounds(130, 198, 334, 323);
 		
-		
-		
-		
-		JPanel panel_1 = new JPanel();
+		panel_1 = new JPanel();
 		panel_1.setBackground(Color.PINK);
 		tabbedPane.addTab("Mood", new ImageIcon("./Img/mood.png"), panel_1, null);
 		panel_1.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Your Puppy's emotion is Happy");
+		lblNewLabel = new JLabel("Your Puppy's emotion is Happy");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Lucida Grande", Font.ITALIC, 30));
-		lblNewLabel.setBounds(16, 630, 538, 83);
+		lblNewLabel.setBounds(15, 672, 590, 83);
 		panel_1.add(lblNewLabel);
 		
-		if( taskList.getTotalCount() != 0) {
 		
-		percent = taskList.getCompletedCount()/taskList.getTotalCount();
 		
+		if(taskList.getTotalCount() != 0) {
+		percent = taskList.getCompletedCount()/taskList.getTotalCount()*100;
 		}
 		else {
 			percent = 20;
 		}
 		
-		if (percent <= 100 && percent >= 66) {
-			
-			lblNewLabel.setText("Your Puppy's emotion is Happy");
-			panel_1.add(happyLabel);
-			
-		}
-		
-		
-		if(percent < 66 && percent >= 33) {
-			
-			lblNewLabel.setText("Your Puppy is task Worried ");
-			panel_1.add(okayLabel);
-			
-		}
-		
-		if(percent < 33) {
-			
-			lblNewLabel.setText("Your Puppy's emotion is Sad");
-			panel_1.add(cryingLabel);
-			
-		}
-		
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setValue(100);
-		progressBar.setForeground(Color.WHITE);
+		progressBar = new JProgressBar();
+		progressBar.setValue(percent);
 		progressBar.setBounds(94, 46, 440, 33);
 		panel_1.add(progressBar);
 		
-		progressBar.setValue(percent);
 		
 		
+		
+		updatePercent();
 		
 		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(Color.PINK);
 		tabbedPane.addTab("All Tasks", new ImageIcon("./Img/notepad.png"), panel_2, null);
-		UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab.contentMargins", new Insets(10, 100, 0, 0));
+		panel_2.setLayout(null);
+		
+		table_1 = new JTable();
+		table_1.setRowHeight(35);
+		table_1.setBounds(15, 16, 590, 317);
+		table_1.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		updateIncompleteTable();
+		JScrollPane scrollPane = new JScrollPane(table_1);
+		scrollPane.setBounds(15, 16, 590, 317);
+		panel_2.add(scrollPane);
+		
+		JButton btnComplete = new JButton("Complete");
+		btnComplete.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				taskList.setComplete(table_1.getSelectedRow());
+				updateHomeTable();
+				updateCompleteTable();
+				updateIncompleteTable();
+				label_1.setText("Incomplete: "+taskList.getIncompleteCount());
+				lblCompletedTasks.setText("Completed: "+taskList.getCompletedCount());
+				lblTotalTasks.setText("Total: "+taskList.getTotalCount());
+				updatePercent();
+				
+			}
+		});
+		btnComplete.setBounds(188, 349, 115, 29);
+		panel_2.add(btnComplete);
+		
+		JButton btnDelete_1 = new JButton("Delete");
+		btnDelete_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				taskList.removeTask(table_1.getSelectedRow());
+				updateHomeTable();
+				updateCompleteTable();
+				updateIncompleteTable();
+				label_1.setText("Incomplete: "+taskList.getIncompleteCount());
+				lblCompletedTasks.setText("Completed: "+taskList.getCompletedCount());
+				lblTotalTasks.setText("Total: "+taskList.getTotalCount());
+				updatePercent();
+			}
+		});
+		btnDelete_1.setBounds(318, 349, 115, 29);
+		panel_2.add(btnDelete_1);
+		
+		table_2 = new JTable();
+		updateCompleteTable();
+		table_2.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		table_2.setRowHeight(35);
+		table_2.setBounds(15, 404, 590, 317);
+		JScrollPane scrollPane2 = new JScrollPane(table_2);
+		scrollPane2.setBounds(15, 404, 590, 317);
+		panel_2.add(scrollPane2);
+		
+		
+		
+		JButton button_1 = new JButton("Delete");
+		button_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				taskList.removeCompleted(table_2.getSelectedRow());
+				updateHomeTable();
+				updateCompleteTable();
+				updateIncompleteTable();
+				label_1.setText("Incomplete: "+taskList.getIncompleteCount());
+				lblCompletedTasks.setText("Completed: "+taskList.getCompletedCount());
+				lblTotalTasks.setText("Total: "+taskList.getTotalCount());
+				updatePercent();
+				
+			}
+		});
+		button_1.setBounds(249, 737, 115, 29);
+		panel_2.add(button_1);
 	}
 	public void writeObjectToFile(Object serObj,String filepath) {
         try {
@@ -364,7 +439,6 @@ public class tazklevellerapp {
 	
 	public void updateHomeTable(){
 		DefaultTableModel tableModel = new DefaultTableModel(new Object[][] {
-			{"To-Do", "Severity"},
 			{null, null},
 			{null, null},
 			{null, null},
@@ -373,17 +447,114 @@ public class tazklevellerapp {
 			{null, null},
 		},
 		new String[] {
-			"To-Do", "Severity"
+			"Incomplete Tasks", "Severity"
 		});
 		if (taskList.getIncompleteCount()>0) {
-			int loopSize = Math.min(taskList.getIncompleteCount()+1, 7);
-			for(int i =1;i<loopSize;i++) {
-				tableModel.setValueAt(taskList.getNameIncomplete(i-1), i, 0);
-				tableModel.setValueAt(taskList.getSeverityIncomplete(i-1), i, 1);
+			int loopSize = Math.min(taskList.getIncompleteCount(), 6);
+			for(int i =0;i<loopSize;i++) {
+				tableModel.setValueAt(taskList.getNameIncomplete(i), i, 0);
+				tableModel.setValueAt(taskList.getSeverityIncomplete(i), i, 1);
 			}
 		}
 		table.setModel(tableModel);
 		table.getColumnModel().getColumn(0).setPreferredWidth(236);
 		table.getColumnModel().getColumn(1).setPreferredWidth(40);
+	}
+	
+	public void updateIncompleteTable(){
+		DefaultTableModel tableModel = new DefaultTableModel(
+				new Object[][] {
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+				},
+				new String[] {
+					"Incomplete Tasks", "Severity"
+				}
+			);
+		if (taskList.getIncompleteCount()>0) {
+			int loopSize = Math.min(taskList.getIncompleteCount(), 14);
+			for(int i =0;i<loopSize;i++) {
+				tableModel.setValueAt(taskList.getNameIncomplete(i), i, 0);
+				tableModel.setValueAt(taskList.getSeverityIncomplete(i), i, 1);
+			}
+		}
+		table_1.setModel(tableModel);
+	}
+	public void updateCompleteTable(){
+		DefaultTableModel tableModel = new DefaultTableModel(
+				new Object[][] {
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+					{null, null},
+				},
+				new String[] {
+					"Completed Tasks", "Severity"
+				}
+			);
+		if (taskList.getCompletedCount()>0) {
+			int loopSize = Math.min(taskList.getCompletedCount(), 14);
+			for(int i =0;i<loopSize;i++) {
+				tableModel.setValueAt(taskList.getNameComplete(i), i, 0);
+				tableModel.setValueAt(taskList.getSeverityComplete(i), i, 1);
+			}
+		}
+		table_2.setModel(tableModel);
+	}
+	
+	public void updatePercent() {
+		if(taskList.getTotalCount() != 0) {
+			percent = (taskList.getCompletedCount()/taskList.getTotalCount())*100;
+			}
+		else {
+				percent = 20;
+			}
+		if (percent <= 100 && percent >= 66) {
+			
+			lblNewLabel.setText("Your Puppy is Happy");
+			panel_1.add(happyLabel);
+			panel_1.remove(cryingLabel);
+			panel_1.remove(okayLabel);
+			progressBar.setForeground(Color.GREEN);
+		}
+		
+		if(percent < 66 && percent >= 33) {	
+			lblNewLabel.setText("Your Puppy is Worried ");
+			panel_1.add(okayLabel);
+			panel_1.remove(happyLabel);
+			panel_1.remove(okayLabel);
+			progressBar.setForeground(Color.YELLOW);
+		}
+		
+		if(percent < 33) {
+			lblNewLabel.setText("Your Puppy is Sad");
+			panel_1.add(cryingLabel);
+			panel_1.remove(happyLabel);
+			panel_1.remove(okayLabel);
+			progressBar.setForeground(Color.RED);
+		}
+		progressBar.setValue(percent);
 	}
 }

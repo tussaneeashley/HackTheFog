@@ -52,6 +52,10 @@ public class Task implements Serializable{
 		return severityStr;
 	}
 	
+	public int getSeverityInt() {
+		return severity;
+	}
+	
 	public double getHours() {
 		return hoursToFinish;
 	}

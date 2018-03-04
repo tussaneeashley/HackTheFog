@@ -23,7 +23,7 @@ public class TaskList implements Serializable{
 	}
 	
 	public void addTask(String taskName,int severity) {
-		incompleteTasks.add(new Task(taskName,severity));
+		insertIncomplete(new Task(taskName,severity));
 		totalTaskCount++;
 		incompleteCount++;
 	}
@@ -53,7 +53,7 @@ public class TaskList implements Serializable{
 	public void setComplete(Task completedTask) {
 		incompleteTasks.remove(completedTask);
 		incompleteCount--;
-		completedTasks.add(completedTask);
+		insertComplete(completedTask);
 		completedCount++;
 	}
 	
@@ -88,5 +88,35 @@ public class TaskList implements Serializable{
 	
 	public String getSeverityComplete(int index) {
 		return completedTasks.get(index).getSeverity();
+	}
+	
+	public void insertIncomplete(Task task){
+	    // loop through all elements
+	    for (int i = 0; i < incompleteCount; i++) {
+	        // if the element you are looking at is smaller than x, 
+	        // go to the next element
+	        if (incompleteTasks.get(i).getSeverityInt() < task.getSeverityInt()) continue;
+	        // otherwise, we have found the location to add x
+	        incompleteTasks.add(i, task);
+	        return;
+	    }
+	    // we looked through all of the elements, and they were all
+	    // smaller than x, so we add ax to the end of the list
+	    incompleteTasks.add(task);
+	}
+	
+	public void insertComplete(Task task){
+	    // loop through all elements
+	    for (int i = 0; i < completedCount; i++) {
+	        // if the element you are looking at is smaller than x, 
+	        // go to the next element
+	        if (completedTasks.get(i).getSeverityInt() < task.getSeverityInt()) continue;
+	        // otherwise, we have found the location to add x
+	        completedTasks.add(i, task);
+	        return;
+	    }
+	    // we looked through all of the elements, and they were all
+	    // smaller than x, so we add ax to the end of the list
+	    completedTasks.add(task);
 	}
 }
