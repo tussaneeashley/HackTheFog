@@ -20,6 +20,19 @@ public class TaskList {
 		totalTaskCount++;
 		incompleteCount++;
 	}
+	
+	public void removeTask(Task removedTask) {
+		incompleteTasks.remove(removedTask);
+		incompleteCount--;
+		totalTaskCount--;
+	}
+	
+	public void removeCompleted(Task completedTask) {
+		completeTasks.remove(completedTask);
+		completedCount--;
+		totalTaskCount--;
+	}
+	
 	public void setComplete(Task completedTask) {
 		incompleteTasks.remove(completedTask);
 		incompleteCount--;
