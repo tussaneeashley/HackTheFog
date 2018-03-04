@@ -544,7 +544,7 @@ public class tazklevellerapp {
 			lblNewLabel.setText("Your Puppy is Worried ");
 			panel_1.add(okayLabel);
 			panel_1.remove(happyLabel);
-			panel_1.remove(okayLabel);
+			panel_1.remove(cryingLabel);
 			progressBar.setForeground(Color.YELLOW);
 		}
 		
