@@ -186,7 +186,7 @@ public class tazklevellerapp {
 		
 		if( taskList.getTotalCount() != 0) {
 			
-		
+		 
 		percent = taskList.getCompletedCount()/taskList.getTotalCount();
 		
 		}
