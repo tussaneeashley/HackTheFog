@@ -13,7 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import java.awt.Font;
+import java.awt.Insets;
+
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.JTextArea;
@@ -24,10 +27,13 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.RoundRectangle2D;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class tazklevellerapp {
 	private static final String filepathPrefs=".\\Data\\Preferences.ser";
@@ -73,20 +79,20 @@ public class tazklevellerapp {
 		taskList = new TaskList();
 		
 		frame = new JFrame();
-		frame.getContentPane().setBackground(Color.LIGHT_GRAY);
-		frame.setBounds(100, 100, 647, 882);
+		frame.getContentPane().setBackground(prefs.getColor());
+		frame.setBounds(100, 100, 647, 952);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		tabbedPane.setBackground(prefs.getColor());
-		tabbedPane.setBounds(0, 0, 625, 826);
+		tabbedPane.setBounds(0, 0, 625, 880);
 		frame.getContentPane().add(tabbedPane);
 		
 		
 		
 		JPanel panel = new JPanel();
-		tabbedPane.addTab("Home", null, panel, null);
+		tabbedPane.addTab("Home",new ImageIcon("./Img/home.png") , panel, null);
 		
 		JLabel lblGood = new JLabel("Hello,");
 		lblGood.setHorizontalAlignment(SwingConstants.CENTER);
@@ -111,29 +117,28 @@ public class tazklevellerapp {
 		StyleConstants.setFontSize(attribs, 30);
 		
 		JTextPane txtpnWhatWouldYou = new JTextPane();
+		txtpnWhatWouldYou.setBackground(prefs.getColor());
 		txtpnWhatWouldYou.setParagraphAttributes(attribs,true);
 		txtpnWhatWouldYou.setFont(new Font("Segoe UI Light", Font.PLAIN, 30));
 		txtpnWhatWouldYou.setEditable(false);
 		txtpnWhatWouldYou.setText("What would you like to accomplish today?");
-		txtpnWhatWouldYou.setBounds(0, 86, 620, 77);
+		txtpnWhatWouldYou.setBounds(25, 86, 580, 58);
 		
 		
 		panel.add(txtpnWhatWouldYou);
 		JLabel label = new JLabel("");
 		panel.add(label);
 		
-		table = new JTable();
-		table.setBounds(15, 733, 590, -367);
-		panel.add(table);
-		
 		JTextArea textArea = new JTextArea();
-		textArea.setBounds(15, 200, 492, 71);
+		textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
+		textArea.setBounds(15, 200, 421, 71);
 		panel.add(textArea);
 		
 		JComboBox comboBox = new JComboBox();
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 19));
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Urgent", "Normal", "Low"}));
 		comboBox.setSelectedIndex(1);
-		comboBox.setBounds(522, 200, 83, 71);
+		comboBox.setBounds(451, 200, 154, 71);
 		panel.add(comboBox);
 		
 		JButton btnAddTask = new JButton("Add Task");
@@ -143,6 +148,8 @@ public class tazklevellerapp {
 				if (textArea.getText().trim().length() > 0) {
 					taskList.addTask(new Task(textArea.getText(),comboBox.getSelectedIndex()));
 					System.out.println(taskList.getNameIncomplete(0)+", "+taskList.getSeverityIncomplete(0));
+				} else { 
+					
 				}
 				
 			}
@@ -150,9 +157,34 @@ public class tazklevellerapp {
 		btnAddTask.setBounds(243, 287, 115, 29);
 		panel.add(btnAddTask);
 		
+		table = new JTable();
+		table.setFillsViewportHeight(true);
+		table.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"To-Do", "Severity"},
+				{null, null},
+				{null, null},
+				{null, null},
+				{null, null},
+				{null, null},
+				{null, null},
+			},
+			new String[] {
+				"New column", "New column"
+			}
+		));
+		table.getColumnModel().getColumn(0).setPreferredWidth(236);
+		table.getColumnModel().getColumn(1).setPreferredWidth(40);
+		table.setBounds(15, 391, 590, 385);
+		panel.add(table);
+		table.setBorder(new LineBorder(new Color(0, 0, 0)));
+		table.setBackground(Color.WHITE);
+		table.setRowHeight(55);
+		
 		
 		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("Health", null, panel_1, null);
+		tabbedPane.addTab("Mood", new ImageIcon("./Img/mood.png"), panel_1, null);
 		panel_1.setLayout(null);
 		
 		JProgressBar progressBar = new JProgressBar();
@@ -170,7 +202,8 @@ public class tazklevellerapp {
 		
 		
 		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("New tab", null, panel_2, null);
+		tabbedPane.addTab("All Tasks", new ImageIcon("./Img/notepad.png"), panel_2, null);
+		UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab.contentMargins", new Insets(10, 100, 0, 0));
 	}
 	public void WriteObjectToFile(Object serObj,String filepath) {
         try {
