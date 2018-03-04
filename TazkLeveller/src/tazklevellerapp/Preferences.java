@@ -7,6 +7,10 @@ public class Preferences {
 	private String userName;
 	private Color color;
 	
+	public Preferences() {
+		color = new Color(221,221,221);
+	}
+	
 	public void setName(String name) {
 		userName = name;
 	}
