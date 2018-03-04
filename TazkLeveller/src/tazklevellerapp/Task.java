@@ -1,6 +1,8 @@
 package tazklevellerapp;
 
-public class Task {
+import java.io.Serializable;
+
+public class Task implements Serializable{
 	
 	private String name;
 	private int severity;

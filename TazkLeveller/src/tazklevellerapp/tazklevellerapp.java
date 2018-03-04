@@ -27,19 +27,23 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.RoundRectangle2D;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class tazklevellerapp {
 	private static final String filepathPrefs=".\\Data\\Preferences.ser";
 	private static final String filepathList=".\\Data\\List.ser";
 	
 	private JFrame frame;
+	private JPanel panel;
 	
 	private Preferences prefs;
 	private Calendar calendar = Calendar.getInstance();
@@ -66,18 +70,30 @@ public class tazklevellerapp {
 
 	/**
 	 * Create the application.
+	 * @throws IOException 
 	 */
-	public tazklevellerapp() {
+	public tazklevellerapp() throws IOException {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws IOException 
 	 */
-	private void initialize() {
-		prefs = new Preferences();
-		taskList = new TaskList();
-		
+	private void initialize() throws IOException {
+		if (!new File(filepathPrefs).exists())
+		{
+			prefs = new Preferences();
+		} else {
+			prefs = (Preferences) readObjectFromFile(filepathPrefs);
+		}
+		if (!new File(filepathList).exists())
+		{
+			taskList = new TaskList();
+		} else {
+			taskList = (TaskList) readObjectFromFile(filepathList);
+		}
+				
 		frame = new JFrame();
 		frame.getContentPane().setBackground(prefs.getColor());
 		frame.setBounds(100, 100, 647, 952);
@@ -86,18 +102,47 @@ public class tazklevellerapp {
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
 		tabbedPane.setBackground(prefs.getColor());
-		tabbedPane.setBounds(0, 0, 625, 880);
+		tabbedPane.setBounds(0, 0, 625, 896);
 		frame.getContentPane().add(tabbedPane);
 		
-		
-		
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		tabbedPane.addTab("Home",new ImageIcon("./Img/home.png") , panel, null);
 		
 		JLabel lblGood = new JLabel("Hello,");
 		lblGood.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGood.setBounds(15, 16, 590, 65);
 		panel.setLayout(null);
+		
+		JButton btnSave = new JButton("Save");
+		btnSave.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				new File(filepathPrefs);
+				new File(filepathList);
+				writeObjectToFile(prefs,filepathPrefs);
+				writeObjectToFile(taskList,filepathList);
+			}
+		});
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnSave.setBounds(15, 16, 80, 29);
+		panel.add(btnSave);
+		
+		JButton btnLoad = new JButton("Load");
+		btnLoad.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					initialize();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnLoad.setBounds(101, 16, 95, 29);
+		panel.add(btnLoad);
 		
 		lblGood.setFont(new Font("Segoe UI", Font.BOLD, 40));
 		
@@ -141,16 +186,20 @@ public class tazklevellerapp {
 		comboBox.setBounds(451, 200, 154, 71);
 		panel.add(comboBox);
 		
+		JLabel label_1 = new JLabel("Incomplete Tasks: " + taskList.getIncompleteCount());
+		label_1.setBounds(15, 792, 213, 20);
+		panel.add(label_1);
+		
 		JButton btnAddTask = new JButton("Add Task");
 		btnAddTask.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (textArea.getText().trim().length() > 0) {
-					taskList.addTask(new Task(textArea.getText(),comboBox.getSelectedIndex()));
-					System.out.println(taskList.getNameIncomplete(0)+", "+taskList.getSeverityIncomplete(0));
-				} else { 
-					
-				}
+					taskList.addTask(textArea.getText(),comboBox.getSelectedIndex());
+					updateHomeTable();
+					label_1.setText("Incomplete tasks: "+taskList.getIncompleteCount());
+					System.out.println(taskList.getIncompleteCount());
+				} else {}
 				
 			}
 		});
@@ -160,20 +209,7 @@ public class tazklevellerapp {
 		table = new JTable();
 		table.setFillsViewportHeight(true);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"To-Do", "Severity"},
-				{null, null},
-				{null, null},
-				{null, null},
-				{null, null},
-				{null, null},
-				{null, null},
-			},
-			new String[] {
-				"New column", "New column"
-			}
-		));
+		updateHomeTable();
 		table.getColumnModel().getColumn(0).setPreferredWidth(236);
 		table.getColumnModel().getColumn(1).setPreferredWidth(40);
 		table.setBounds(15, 391, 590, 385);
@@ -181,6 +217,18 @@ public class tazklevellerapp {
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
 		table.setBackground(Color.WHITE);
 		table.setRowHeight(55);
+		
+		JButton btnCompleteTask = new JButton("Completed");
+		btnCompleteTask.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnCompleteTask.setBounds(379, 788, 113, 29);
+		panel.add(btnCompleteTask);
+		
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.setBounds(499, 788, 95, 29);
+		panel.add(btnDelete);
 		
 		
 		JPanel panel_1 = new JPanel();
@@ -205,16 +253,59 @@ public class tazklevellerapp {
 		tabbedPane.addTab("All Tasks", new ImageIcon("./Img/notepad.png"), panel_2, null);
 		UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab.contentMargins", new Insets(10, 100, 0, 0));
 	}
-	public void WriteObjectToFile(Object serObj,String filepath) {
+	public void writeObjectToFile(Object serObj,String filepath) {
         try {
             FileOutputStream fileOut = new FileOutputStream(filepath);
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(serObj);
             objectOut.close();
             fileOut.close();
-            System.out.println("The Object  was succesfully written to a file");
+            System.out.println("The Object  was successfully written to a file");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+	
+	public Object readObjectFromFile(String filepath) throws IOException {
+		Object readCase = null;
+		ObjectInputStream objectinputstream = null;
+		try {
+		    FileInputStream streamIn = new FileInputStream(filepath);
+		    objectinputstream = new ObjectInputStream(streamIn);
+		    readCase = objectinputstream.readObject();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		} finally {
+		    if(objectinputstream != null){
+		        objectinputstream.close();
+		    } 
+		}
+		return readCase;
+	}
+	
+	public void updateHomeTable(){
+		if (taskList.getTotalCount()==0) {
+			table.setModel(new DefaultTableModel(new Object[][] {
+				{"To-Do", "Severity"},
+				{null, null},
+				{null, null},
+				{null, null},
+				{null, null},
+				{null, null},
+				{null, null},
+			},
+			new String[] {
+				"To-Do", "Severity"
+			}));
+		}
+		else {
+			DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+			int loopSize = Math.min(taskList.getIncompleteCount()+1, 7);
+			for(int i =1;i<loopSize;i++) {
+				tableModel.setValueAt(taskList.getNameIncomplete(i-1), i, 0);
+				tableModel.setValueAt(taskList.getSeverityIncomplete(i-1), i, 1);
+			}
+			table.setModel(tableModel);
+		}
+	}
 }

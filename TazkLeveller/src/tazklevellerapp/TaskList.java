@@ -1,8 +1,9 @@
 package tazklevellerapp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TaskList {
+public class TaskList implements Serializable{
 	private int totalTaskCount = 0;
 	private int incompleteCount = 0;
 	private int completedCount = 0;
@@ -17,6 +18,12 @@ public class TaskList {
 	
 	public void addTask(Task task) {
 		incompleteTasks.add(task);
+		totalTaskCount++;
+		incompleteCount++;
+	}
+	
+	public void addTask(String taskName,int severity) {
+		incompleteTasks.add(new Task(taskName,severity));
 		totalTaskCount++;
 		incompleteCount++;
 	}
