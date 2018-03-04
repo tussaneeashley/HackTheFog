@@ -109,8 +109,76 @@ public class tazklevellerapp {
 		tabbedPane.setBounds(0, 0, 625, 896);
 		frame.getContentPane().add(tabbedPane);
 		
+		if(timeHr >= 6&& timeHr < 12) {
+			lblGood.setText("Good Morning,");
+		} else if(timeHr >= 12 && timeHr < 18) {
+			lblGood.setText("Good Afternoon,");
+		} else{
+			lblGood.setText("Good Evening,");
+		}
+		
+		SimpleAttributeSet attribs = new SimpleAttributeSet();  
+		StyleConstants.setAlignment(attribs , StyleConstants.ALIGN_CENTER); 
+		StyleConstants.setFontFamily(attribs,"Segoe UI Light");
+		StyleConstants.setFontSize(attribs, 30);
+		updateHomeTable();
+		
+		
+		
+		
+		
+		ImageIcon happy = new ImageIcon("./Img/Happy.png");
+		JLabel happyLabel = new JLabel(happy);
+		
+		ImageIcon Crying = new ImageIcon("./Img/Crying.png");
+		JLabel cryingLabel = new JLabel(Crying);
+		
+		ImageIcon Okay = new ImageIcon("./Img/Not feeling Good.png");
+		JLabel okayLabel = new JLabel(Okay);
+		
+		
+		
+		
+		happyLabel.setBounds(130, 198, 334, 323);
+		
+		cryingLabel.setBounds(130, 198, 334, 323);
+		
+		okayLabel.setBounds(130, 198, 334, 323);
+		
+		if( taskList.getTotalCount() != 0) {
+		
+		percent = taskList.getCompletedCount()/taskList.getTotalCount()*100;
+		
+		}
+		else {
+			percent = 20;
+		}
+		
+		if (percent <= 100 && percent >= 66) {
+			
+			lblNewLabel.setText("Your Puppy's emotion is Happy");
+			panel_1.add(happyLabel);
+			
+		}
+		
+		
+		if(percent < 66 && percent >= 33) {
+			
+			lblNewLabel.setText("Your Puppy is task Worried ");
+			panel_1.add(okayLabel);
+			
+		}
+		
+		if(percent < 33) {
+			
+			lblNewLabel.setText("Your Puppy's emotion is Sad");
+			panel_1.add(cryingLabel);
+			
+		}
+		
 		panel = new JPanel();
-		tabbedPane.addTab("Home",new ImageIcon("./Img/home.png") , panel, null);
+		tabbedPane.addTab("New tab", null, panel, null);
+		panel.setBackground(Color.PINK);
 		
 		JLabel lblGood = new JLabel("Hello,");
 		lblGood.setHorizontalAlignment(SwingConstants.CENTER);
@@ -152,26 +220,13 @@ public class tazklevellerapp {
 		
 		panel.add(lblGood);
 		
-		if(timeHr >= 6&& timeHr < 12) {
-			lblGood.setText("Good Morning,");
-		} else if(timeHr >= 12 && timeHr < 18) {
-			lblGood.setText("Good Afternoon,");
-		} else{
-			lblGood.setText("Good Evening,");
-		}
-		
-		SimpleAttributeSet attribs = new SimpleAttributeSet();  
-		StyleConstants.setAlignment(attribs , StyleConstants.ALIGN_CENTER); 
-		StyleConstants.setFontFamily(attribs,"Segoe UI Light");
-		StyleConstants.setFontSize(attribs, 30);
-		
 		JTextPane txtpnWhatWouldYou = new JTextPane();
-		txtpnWhatWouldYou.setBackground(prefs.getColor());
+		txtpnWhatWouldYou.setBackground(Color.WHITE);
 		txtpnWhatWouldYou.setParagraphAttributes(attribs,true);
 		txtpnWhatWouldYou.setFont(new Font("Segoe UI Light", Font.PLAIN, 30));
 		txtpnWhatWouldYou.setEditable(false);
 		txtpnWhatWouldYou.setText("What would you like to accomplish today?");
-		txtpnWhatWouldYou.setBounds(25, 86, 580, 58);
+		txtpnWhatWouldYou.setBounds(25, 86, 580, 71);
 		
 		
 		panel.add(txtpnWhatWouldYou);
@@ -179,7 +234,7 @@ public class tazklevellerapp {
 		panel.add(label);
 		
 		JTextArea textArea = new JTextArea();
-		textArea.setBounds(-211, 175, 492, 71);
+		textArea.setBounds(15, 173, 421, 98);
 		textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
 		textArea.setBounds(15, 200, 421, 71);
 		panel.add(textArea);
@@ -214,7 +269,6 @@ public class tazklevellerapp {
 		table = new JTable();
 		table.setFillsViewportHeight(true);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		updateHomeTable();
 		table.getColumnModel().getColumn(0).setPreferredWidth(236);
 		table.getColumnModel().getColumn(1).setPreferredWidth(40);
 		table.setBounds(15, 391, 590, 385);
@@ -255,28 +309,6 @@ public class tazklevellerapp {
 		
 		
 		
-		
-		ImageIcon happy = new ImageIcon("./Img/Happy.png");
-		JLabel happyLabel = new JLabel(happy);
-		
-		ImageIcon Crying = new ImageIcon("./Img/Crying.png");
-		JLabel cryingLabel = new JLabel(Crying);
-		
-		ImageIcon Okay = new ImageIcon("./Img/Not feeling Good.png");
-		JLabel okayLabel = new JLabel(Okay);
-		
-		
-		
-		
-		happyLabel.setBounds(130, 198, 334, 323);
-		
-		cryingLabel.setBounds(130, 198, 334, 323);
-		
-		okayLabel.setBounds(130, 198, 334, 323);
-		
-		
-		
-		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.PINK);
 		tabbedPane.addTab("Mood", new ImageIcon("./Img/mood.png"), panel_1, null);
@@ -286,37 +318,6 @@ public class tazklevellerapp {
 		lblNewLabel.setFont(new Font("Lucida Grande", Font.ITALIC, 30));
 		lblNewLabel.setBounds(16, 630, 538, 83);
 		panel_1.add(lblNewLabel);
-		
-		if( taskList.getTotalCount() != 0) {
-		
-		percent = taskList.getCompletedCount()/taskList.getTotalCount();
-		
-		}
-		else {
-			percent = 20;
-		}
-		
-		if (percent <= 100 && percent >= 66) {
-			
-			lblNewLabel.setText("Your Puppy's emotion is Happy");
-			panel_1.add(happyLabel);
-			
-		}
-		
-		
-		if(percent < 66 && percent >= 33) {
-			
-			lblNewLabel.setText("Your Puppy is task Worried ");
-			panel_1.add(okayLabel);
-			
-		}
-		
-		if(percent < 33) {
-			
-			lblNewLabel.setText("Your Puppy's emotion is Sad");
-			panel_1.add(cryingLabel);
-			
-		}
 		
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setValue(100);
@@ -329,7 +330,8 @@ public class tazklevellerapp {
 		
 		
 		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("All Tasks", new ImageIcon("./Img/notepad.png"), panel_2, null);
+		panel_2.setBackground(Color.PINK);
+		tabbedPane.addTab("New tab", null, panel_2, null);
 		UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab.contentMargins", new Insets(10, 100, 0, 0));
 	}
 	public void writeObjectToFile(Object serObj,String filepath) {
