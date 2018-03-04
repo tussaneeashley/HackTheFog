@@ -4,18 +4,27 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import java.awt.TextArea;
+import java.util.Calendar;
 import java.awt.BorderLayout;
 import javax.swing.JProgressBar;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
+import java.awt.Font;
+import javax.swing.SwingConstants;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 public class tazklevellerapp {
 
 	private JFrame frame;
 	
 	private Preferences prefs;
+	private Calendar calendar = Calendar.getInstance();
+	private int timeHr = calendar.get(Calendar.HOUR_OF_DAY);
 
 	/**
 	 * Launch the application.
@@ -47,6 +56,7 @@ public class tazklevellerapp {
 		prefs = new Preferences();
 		
 		
+		
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.LIGHT_GRAY);
 		frame.setBounds(100, 100, 647, 882);
@@ -58,14 +68,39 @@ public class tazklevellerapp {
 		tabbedPane.setBounds(0, 0, 625, 826);
 		frame.getContentPane().add(tabbedPane);
 		
+		
+		
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("New tab", null, panel, null);
 		
-		JProgressBar progressBar = new JProgressBar();
-		panel.add(progressBar);
+		JLabel lblGood = new JLabel("Hello,");
+		lblGood.setHorizontalAlignment(SwingConstants.CENTER);
+		lblGood.setBounds(15, 16, 590, 43);
+		panel.setLayout(null);
 		
-		JLabel label = new JLabel("");
-		panel.add(label);
+		lblGood.setFont(new Font("Segoe UI", Font.BOLD, 40));
+		
+		panel.add(lblGood);
+		
+		if(timeHr >= 6&& timeHr < 12) {
+			lblGood.setText("Good Morning,");
+		} else if(timeHr >= 12 && timeHr < 18) {
+			lblGood.setText("Good Afternoon,");
+		} else{
+			lblGood.setText("Good Evening,");
+		}
+		
+		SimpleAttributeSet attribs = new SimpleAttributeSet();  
+		StyleConstants.setAlignment(attribs , StyleConstants.ALIGN_CENTER); 
+		
+		JTextPane txtpnWhatWouldYou = new JTextPane();
+		txtpnWhatWouldYou.setFont(new Font("Segoe UI Light", Font.PLAIN, 30));
+		txtpnWhatWouldYou.setEditable(false);
+		txtpnWhatWouldYou.setText("What would you like to accomplish today?");
+		txtpnWhatWouldYou.setBounds(0, 86, 620, 77);
+		txtpnWhatWouldYou.setParagraphAttributes(attribs,true);
+		
+		panel.add(txtpnWhatWouldYou);
 		
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("New tab", null, panel_1, null);
