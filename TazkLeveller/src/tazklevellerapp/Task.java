@@ -37,8 +37,17 @@ public class Task {
 		return name;
 	}
 	
-	public int getSeverity() {
-		return severity;
+	public String getSeverity() {
+		String severityStr = "";
+		switch(severity) {
+		case 0: severityStr="Urgent";
+				break;
+		case 1: severityStr="Normal";
+				break;
+		case 2: severityStr="Low";
+				break;
+		}
+		return severityStr;
 	}
 	
 	public double getHours() {

@@ -8,11 +8,11 @@ public class TaskList {
 	private int completedCount = 0;
 	
 	private ArrayList<Task> incompleteTasks;
-	private ArrayList<Task> completeTasks;
+	private ArrayList<Task> completedTasks;
 
 	public TaskList() {
 		incompleteTasks = new ArrayList<Task>();
-		completeTasks = new ArrayList<Task>();
+		completedTasks = new ArrayList<Task>();
 	}
 	
 	public void addTask(Task task) {
@@ -28,7 +28,7 @@ public class TaskList {
 	}
 	
 	public void removeCompleted(Task completedTask) {
-		completeTasks.remove(completedTask);
+		completedTasks.remove(completedTask);
 		completedCount--;
 		totalTaskCount--;
 	}
@@ -36,7 +36,7 @@ public class TaskList {
 	public void setComplete(Task completedTask) {
 		incompleteTasks.remove(completedTask);
 		incompleteCount--;
-		completeTasks.add(completedTask);
+		completedTasks.add(completedTask);
 		completedCount++;
 	}
 	
@@ -52,5 +52,19 @@ public class TaskList {
 		return completedCount;
 	}
 
+	public String getNameIncomplete(int index) {
+		return incompleteTasks.get(index).getName();
+	}
 	
+	public String getNameComplete(int index) {
+		return completedTasks.get(index).getName();
+	}
+	
+	public String getSeverityIncomplete(int index) {
+		return incompleteTasks.get(index).getSeverity();
+	}
+	
+	public String getSeverityComplete(int index) {
+		return completedTasks.get(index).getSeverity();
+	}
 }

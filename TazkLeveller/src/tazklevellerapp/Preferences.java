@@ -1,11 +1,15 @@
 package tazklevellerapp;
 
 import java.awt.Color;
+import java.io.Serializable;
 
-public class Preferences {
+public class Preferences implements Serializable {
 	
+    private static final long serialVersionUID = 1L;
+
 	private String userName;
 	private Color color;
+	
 	
 	public Preferences() {
 		color = new Color(221,221,221);
