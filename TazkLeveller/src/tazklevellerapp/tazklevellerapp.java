@@ -3,10 +3,15 @@ package tazklevellerapp;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import java.awt.TextArea;
 
 public class tazklevellerapp {
 
 	private JFrame frame;
+	/**
+	 * @wbp.nonvisual location=-26,291
+	 */
+	private final TextArea textArea = new TextArea();
 
 	/**
 	 * Launch the application.
@@ -36,7 +41,7 @@ public class tazklevellerapp {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 450, 631);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
