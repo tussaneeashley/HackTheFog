@@ -48,6 +48,7 @@ public class tazklevellerapp {
 	private TaskList taskList;
 	
 	private int percent;
+	private JLabel HappyPuppy;
 
 	/**
 	 * Launch the application.
@@ -185,17 +186,6 @@ public class tazklevellerapp {
 		table.setRowHeight(55);
 		
 		
-		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("Mood", new ImageIcon("./Img/mood.png"), panel_1, null);
-		panel_1.setLayout(null);
-		
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setValue(100);
-		progressBar.setForeground(Color.RED);
-		progressBar.setBounds(87, 5, 440, 124);
-		panel_1.add(progressBar);
-		
-		
 		
 		
 		
@@ -217,21 +207,31 @@ public class tazklevellerapp {
 		
 		okayLabel.setBounds(130, 198, 334, 323);
 		
+		
+		
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.PINK);
+		tabbedPane.addTab("Mood", new ImageIcon("./Img/mood.png"), panel_1, null);
+		panel_1.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Your Puppy's emotion is Happy");
+		lblNewLabel.setFont(new Font("Lucida Grande", Font.ITALIC, 30));
+		lblNewLabel.setBounds(16, 630, 538, 83);
+		panel_1.add(lblNewLabel);
+		
 		if( taskList.getTotalCount() != 0) {
-			
-		 
+		
 		percent = taskList.getCompletedCount()/taskList.getTotalCount();
 		
 		}
 		else {
-			percent = 100;
+			percent = 20;
 		}
-		
-		progressBar.setValue(percent);
 		
 		if (percent <= 100 && percent >= 66) {
 			
-			happyLabel.setBounds(130, 198, 334, 323);
+			lblNewLabel.setText("Your Puppy's emotion is Happy");
 			panel_1.add(happyLabel);
 			
 		}
@@ -239,17 +239,26 @@ public class tazklevellerapp {
 		
 		if(percent < 66 && percent >= 33) {
 			
-			
+			lblNewLabel.setText("Your Puppy's emotion is Feeling Worried");
 			panel_1.add(okayLabel);
 			
 		}
 		
 		if(percent < 33) {
 			
-			
+			lblNewLabel.setText("Your Puppy's emotion is Sad");
 			panel_1.add(cryingLabel);
 			
 		}
+		
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setValue(100);
+		progressBar.setForeground(Color.WHITE);
+		progressBar.setBounds(94, 46, 440, 33);
+		panel_1.add(progressBar);
+		
+		progressBar.setValue(percent);
+		
 		
 		
 		JPanel panel_2 = new JPanel();
